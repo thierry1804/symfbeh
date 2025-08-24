@@ -85,11 +85,6 @@ jobs:
         cp symfony.lock build/
         cp .htaccess build/
         
-        # Créer le dossier scripts et copier le script de post-déploiement
-        mkdir -p build/scripts
-        cp scripts/post-deploy.sh build/scripts/
-        chmod +x build/scripts/post-deploy.sh
-        
         # Créer le fichier .env pour la production
         echo "APP_ENV=prod" > build/.env
         echo "APP_SECRET=${{ secrets.APP_SECRET }}" >> build/.env
