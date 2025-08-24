@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil - Retail App{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-12">
+        <div class="jumbotron bg-light p-5 rounded">
+            <h1 class="display-4">
+                <i class="fas fa-shopping-cart text-primary me-3"></i>
+                Bienvenue sur Retail App
+            </h1>
+            <p class="lead">
+                Application moderne de gestion retail pour optimiser votre entreprise.
+            </p>
+            <hr class="my-4">
+            
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card text-center mb-3">
+                        <div class="card-body">
+                            <i class="fas fa-user-cog fa-3x text-info mb-3"></i>
+                            <h5 class="card-title">Mon Profil</h5>
+                            <p class="card-text">Gérez vos informations personnelles.</p>
+                            <a href="{{ path('app_profile') }}" class="btn btn-info">
+                                <i class="fas fa-user me-2"></i>Mon profil
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Informations de votre compte
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Nom complet :</strong> {{ app.user.fullName }}</p>
+                        <p><strong>Email :</strong> {{ app.user.email }}</p>
+                        <p><strong>Compte créé le :</strong> {{ app.user.createdAt|date('d/m/Y à H:i') }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Statut :</strong> 
+                            {% if app.user.isActive %}
+                                <span class="badge bg-success">Actif</span>
+                            {% else %}
+                                <span class="badge bg-danger">Inactif</span>
+                            {% endif %}
+                        </p>
+                        <p><strong>Vérification email :</strong> 
+                            {% if app.user.isVerified %}
+                                <span class="badge bg-success">Vérifié</span>
+                            {% else %}
+                                <span class="badge bg-warning">Non vérifié</span>
+                            {% endif %}
+                        </p>
+                        {% if app.user.lastLoginAt %}
+                            <p><strong>Dernière connexion :</strong> {{ app.user.lastLoginAt|date('d/m/Y à H:i') }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

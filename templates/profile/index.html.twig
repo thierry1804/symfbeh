@@ -1,0 +1,113 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Profil - Retail App{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i class="fas fa-user-cog me-2"></i>
+                    Mon Profil
+                </h4>
+            </div>
+            <div class="card-body">
+                {{ form_start(profileForm, {'attr': {'class': 'needs-validation'}}) }}
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form_row(profileForm.firstName) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(profileForm.lastName) }}
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-12">
+                        {{ form_row(profileForm.email) }}
+                    </div>
+                </div>
+                
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a href="{{ path('app_home') }}" class="btn btn-secondary me-md-2">
+                        <i class="fas fa-arrow-left me-2"></i>Retour
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i>Enregistrer
+                    </button>
+                </div>
+                
+                {{ form_end(profileForm) }}
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Informations du compte
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Nom complet :</strong> {{ user.fullName }}</p>
+                        <p><strong>Email :</strong> {{ user.email }}</p>
+                        <p><strong>Compte créé le :</strong> {{ user.createdAt|date('d/m/Y à H:i') }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Statut :</strong> 
+                            {% if user.isActive %}
+                                <span class="badge bg-success">Actif</span>
+                            {% else %}
+                                <span class="badge bg-danger">Inactif</span>
+                            {% endif %}
+                        </p>
+                        <p><strong>Vérification email :</strong> 
+                            {% if user.isVerified %}
+                                <span class="badge bg-success">Vérifié</span>
+                            {% else %}
+                                <span class="badge bg-warning">Non vérifié</span>
+                            {% endif %}
+                        </p>
+                        {% if user.lastLoginAt %}
+                            <p><strong>Dernière connexion :</strong> {{ user.lastLoginAt|date('d/m/Y à H:i') }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-shield-alt me-2"></i>
+                    Sécurité
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <a href="{{ path('app_forgot_password_request') }}" class="btn btn-warning">
+                            <i class="fas fa-key me-2"></i>Changer le mot de passe
+                        </a>
+                    </div>
+                    <div class="col-md-6">
+                        {% if not user.isVerified %}
+                            <a href="#" class="btn btn-info">
+                                <i class="fas fa-envelope me-2"></i>Renvoyer l'email de vérification
+                            </a>
+                        {% else %}
+                            <span class="text-success">
+                                <i class="fas fa-check-circle me-2"></i>Email vérifié
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
