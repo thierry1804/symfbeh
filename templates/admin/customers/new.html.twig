@@ -1,0 +1,343 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouveau Client - CRM{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <!-- En-tête de la page -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('app_customer_index') }}">Clients</a></li>
+                    <li class="breadcrumb-item active">Nouveau client</li>
+                </ol>
+            </nav>
+            <h1 class="h3 mb-0 text-gray-800">
+                <i class="fas fa-user-plus mr-2"></i>Nouveau Client
+            </h1>
+            <p class="text-muted">Ajouter un nouveau client au système CRM</p>
+        </div>
+        <div>
+            <a href="{{ path('app_customer_index') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left mr-1"></i>Retour
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-edit mr-1"></i>Informations du Client
+                    </h6>
+                </div>
+                <div class="card-body">
+                    {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                    
+                    <div class="row">
+                        <!-- Informations personnelles -->
+                        <div class="col-md-6">
+                            <h6 class="text-primary mb-3">
+                                <i class="fas fa-user mr-1"></i>Informations personnelles
+                            </h6>
+                            
+                            <div class="mb-3">
+                                {{ form_label(form.firstName) }}
+                                {{ form_widget(form.firstName) }}
+                                {{ form_errors(form.firstName) }}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ form_label(form.lastName) }}
+                                {{ form_widget(form.lastName) }}
+                                {{ form_errors(form.lastName) }}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ form_label(form.email) }}
+                                {{ form_widget(form.email) }}
+                                {{ form_errors(form.email) }}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ form_label(form.phone) }}
+                                {{ form_widget(form.phone) }}
+                                {{ form_errors(form.phone) }}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ form_label(form.mobile) }}
+                                {{ form_widget(form.mobile) }}
+                                {{ form_errors(form.mobile) }}
+                            </div>
+                        </div>
+                        
+                        <!-- Informations professionnelles -->
+                        <div class="col-md-6">
+                            <h6 class="text-primary mb-3">
+                                <i class="fas fa-briefcase mr-1"></i>Informations professionnelles
+                            </h6>
+                            
+                            <div class="mb-3">
+                                {{ form_label(form.company) }}
+                                {{ form_widget(form.company) }}
+                                {{ form_errors(form.company) }}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ form_label(form.jobTitle) }}
+                                {{ form_widget(form.jobTitle) }}
+                                {{ form_errors(form.jobTitle) }}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ form_label(form.annualRevenue) }}
+                                {{ form_widget(form.annualRevenue) }}
+                                {{ form_errors(form.annualRevenue) }}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ form_label(form.employeeCount) }}
+                                {{ form_widget(form.employeeCount) }}
+                                {{ form_errors(form.employeeCount) }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="row">
+                        <!-- Adresse -->
+                        <div class="col-md-6">
+                            <h6 class="text-primary mb-3">
+                                <i class="fas fa-map-marker-alt mr-1"></i>Adresse
+                            </h6>
+                            
+                            <div class="mb-3">
+                                {{ form_label(form.address) }}
+                                {{ form_widget(form.address) }}
+                                {{ form_errors(form.address) }}
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        {{ form_label(form.postalCode) }}
+                                        {{ form_widget(form.postalCode) }}
+                                        {{ form_errors(form.postalCode) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        {{ form_label(form.city) }}
+                                        {{ form_widget(form.city) }}
+                                        {{ form_errors(form.city) }}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ form_label(form.country) }}
+                                {{ form_widget(form.country) }}
+                                {{ form_errors(form.country) }}
+                            </div>
+                        </div>
+                        
+                        <!-- Réseaux sociaux -->
+                        <div class="col-md-6">
+                            <h6 class="text-primary mb-3">
+                                <i class="fas fa-share-alt mr-1"></i>Réseaux sociaux
+                            </h6>
+                            
+                            <div class="mb-3">
+                                {{ form_label(form.website) }}
+                                {{ form_widget(form.website) }}
+                                {{ form_errors(form.website) }}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ form_label(form.linkedin) }}
+                                {{ form_widget(form.linkedin) }}
+                                {{ form_errors(form.linkedin) }}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ form_label(form.twitter) }}
+                                {{ form_widget(form.twitter) }}
+                                {{ form_errors(form.twitter) }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="row">
+                        <!-- CRM et suivi -->
+                        <div class="col-md-6">
+                            <h6 class="text-primary mb-3">
+                                <i class="fas fa-chart-line mr-1"></i>CRM et suivi
+                            </h6>
+                            
+                            <div class="mb-3">
+                                {{ form_label(form.status) }}
+                                {{ form_widget(form.status) }}
+                                {{ form_errors(form.status) }}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ form_label(form.source) }}
+                                {{ form_widget(form.source) }}
+                                {{ form_errors(form.source) }}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ form_label(form.assignedTo) }}
+                                {{ form_widget(form.assignedTo) }}
+                                {{ form_errors(form.assignedTo) }}
+                            </div>
+                        </div>
+                        
+                        <!-- Dates de suivi -->
+                        <div class="col-md-6">
+                            <h6 class="text-primary mb-3">
+                                <i class="fas fa-calendar mr-1"></i>Suivi
+                            </h6>
+                            
+                            <div class="mb-3">
+                                {{ form_label(form.lastContactAt) }}
+                                {{ form_widget(form.lastContactAt) }}
+                                {{ form_errors(form.lastContactAt) }}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ form_label(form.nextFollowUpAt) }}
+                                {{ form_widget(form.nextFollowUpAt) }}
+                                {{ form_errors(form.nextFollowUpAt) }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <!-- Notes -->
+                    <div class="mb-3">
+                        <h6 class="text-primary mb-3">
+                            <i class="fas fa-sticky-note mr-1"></i>Notes
+                        </h6>
+                        {{ form_label(form.notes) }}
+                        {{ form_widget(form.notes) }}
+                        {{ form_errors(form.notes) }}
+                        <div class="form-text">Ajoutez des notes importantes sur ce client</div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ path('app_customer_index') }}" class="btn btn-secondary">
+                            <i class="fas fa-times mr-1"></i>Annuler
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save mr-1"></i>Créer le client
+                        </button>
+                    </div>
+                    
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sidebar avec aide -->
+        <div class="col-lg-4">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-question-circle mr-1"></i>Aide
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <h6 class="text-primary">Champs obligatoires</h6>
+                    <ul class="list-unstyled small">
+                        <li><i class="fas fa-asterisk text-danger mr-1"></i>Prénom</li>
+                        <li><i class="fas fa-asterisk text-danger mr-1"></i>Nom de famille</li>
+                        <li><i class="fas fa-asterisk text-danger mr-1"></i>Email</li>
+                        <li><i class="fas fa-asterisk text-danger mr-1"></i>Statut</li>
+                    </ul>
+                    
+                    <hr>
+                    
+                    <h6 class="text-primary">Conseils</h6>
+                    <ul class="list-unstyled small">
+                        <li><i class="fas fa-lightbulb text-warning mr-1"></i>Renseignez le plus d'informations possible pour un meilleur suivi</li>
+                        <li><i class="fas fa-lightbulb text-warning mr-1"></i>L'email doit être unique dans le système</li>
+                        <li><i class="fas fa-lightbulb text-warning mr-1"></i>Programmez un suivi pour ne pas oublier de recontacter le client</li>
+                        <li><i class="fas fa-lightbulb text-warning mr-1"></i>Assignez le client à un utilisateur pour le suivi</li>
+                    </ul>
+                    
+                    <hr>
+                    
+                    <h6 class="text-primary">Statuts</h6>
+                    <ul class="list-unstyled small">
+                        <li><span class="badge bg-warning mr-1">Prospect</span> Client potentiel</li>
+                        <li><span class="badge bg-success mr-1">Client</span> Client actif</li>
+                        <li><span class="badge bg-danger mr-1">VIP</span> Client très important</li>
+                        <li><span class="badge bg-secondary mr-1">Inactif</span> Client inactif</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Validation du formulaire
+    const form = document.querySelector('.needs-validation');
+    
+    form.addEventListener('submit', function(event) {
+        if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+    });
+    
+    // Auto-complétion de la date de création
+    const lastContactAt = document.getElementById('customer_lastContactAt');
+    if (lastContactAt && !lastContactAt.value) {
+        lastContactAt.value = new Date().toISOString().split('T')[0];
+    }
+    
+    // Pré-remplir la date de suivi (demain par défaut)
+    const nextFollowUpAt = document.getElementById('customer_nextFollowUpAt');
+    if (nextFollowUpAt && !nextFollowUpAt.value) {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        nextFollowUpAt.value = tomorrow.toISOString().split('T')[0];
+    }
+    
+    // Formatage automatique du téléphone
+    const phoneInputs = document.querySelectorAll('input[name*="phone"], input[name*="mobile"]');
+    phoneInputs.forEach(input => {
+        input.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 0) {
+                if (value.length <= 2) {
+                    value = value;
+                } else if (value.length <= 4) {
+                    value = value.slice(0, 2) + ' ' + value.slice(2);
+                } else if (value.length <= 6) {
+                    value = value.slice(0, 2) + ' ' + value.slice(2, 4) + ' ' + value.slice(4);
+                } else if (value.length <= 8) {
+                    value = value.slice(0, 2) + ' ' + value.slice(2, 4) + ' ' + value.slice(4, 6) + ' ' + value.slice(6);
+                } else {
+                    value = value.slice(0, 2) + ' ' + value.slice(2, 4) + ' ' + value.slice(4, 6) + ' ' + value.slice(6, 8) + ' ' + value.slice(8, 10);
+                }
+            }
+            e.target.value = value;
+        });
+    });
+});
+</script>
+{% endblock %}

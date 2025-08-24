@@ -635,9 +635,15 @@
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="nav-link" data-title="Clients">
+                            <a href="{{ path('app_customer_index') }}" class="nav-link {{ app.request.get('_route') starts with 'app_customer_' ? 'active' : '' }}" data-title="Gestion Clients">
                                 <i class="fas fa-users nav-icon"></i>
-                                <span>Clients</span>
+                                <span>Gestion Clients</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ path('app_customer_dashboard') }}" class="nav-link {{ app.request.get('_route') == 'app_customer_dashboard' ? 'active' : '' }}" data-title="CRM Dashboard">
+                                <i class="fas fa-chart-bar nav-icon"></i>
+                                <span>CRM Dashboard</span>
                             </a>
                         </li>
                         <li>

@@ -1,0 +1,398 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tableau de bord CRM{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <!-- En-tête de la page -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0 text-gray-800">
+                <i class="fas fa-chart-bar mr-2"></i>Tableau de bord CRM
+            </h1>
+            <p class="text-muted">Vue d'ensemble de votre portefeuille clients</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{{ path('app_customer_index') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-list mr-1"></i>Liste des clients
+            </a>
+            <a href="{{ path('app_customer_new') }}" class="btn btn-primary">
+                <i class="fas fa-plus mr-1"></i>Nouveau client
+            </a>
+        </div>
+    </div>
+
+    <!-- Statistiques principales -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Total Clients
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{ statistics.prospect + statistics.client + statistics.vip + statistics.inactif }}
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Clients Actifs
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{ statistics.client + statistics.vip }}
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-user-check fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Prospects
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{ statistics.prospect }}
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-user-clock fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                Clients VIP
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{ statistics.vip }}
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-crown fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Graphique des statuts -->
+        <div class="col-xl-8 col-lg-7">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-chart-pie mr-1"></i>Répartition par statut
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-pie pt-4 pb-2">
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                    <div class="mt-4 text-center small">
+                        <span class="mr-2">
+                            <i class="fas fa-circle text-warning"></i> Prospects
+                        </span>
+                        <span class="mr-2">
+                            <i class="fas fa-circle text-success"></i> Clients
+                        </span>
+                        <span class="mr-2">
+                            <i class="fas fa-circle text-danger"></i> VIP
+                        </span>
+                        <span class="mr-2">
+                            <i class="fas fa-circle text-secondary"></i> Inactifs
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sources d'acquisition -->
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-funnel mr-1"></i>Sources d'acquisition
+                    </h6>
+                </div>
+                <div class="card-body">
+                    {% if sourceStats is empty %}
+                        <p class="text-muted text-center">Aucune donnée disponible</p>
+                    {% else %}
+                        {% for source in sourceStats %}
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="text-sm">{{ source.source|title }}</span>
+                                <span class="badge bg-primary">{{ source.count }}</span>
+                            </div>
+                            <div class="progress mb-3" style="height: 6px;">
+                                {% set total = sourceStats|reduce((carry, s) => carry + s.count, 0) %}
+                                <div class="progress-bar" role="progressbar" 
+                                     style="width: {{ (source.count / total * 100)|round }}%"></div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Clients récents -->
+        <div class="col-lg-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-clock mr-1"></i>Clients récents (7 jours)
+                    </h6>
+                    <a href="{{ path('app_customer_index') }}" class="btn btn-sm btn-outline-primary">
+                        Voir tout
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if recentCustomers is empty %}
+                        <p class="text-muted text-center">Aucun nouveau client cette semaine</p>
+                    {% else %}
+                        <div class="list-group list-group-flush">
+                            {% for customer in recentCustomers|slice(0, 5) %}
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="fw-bold">{{ customer.fullName }}</div>
+                                        <small class="text-muted">{{ customer.email }}</small>
+                                    </div>
+                                    <div class="text-end">
+                                        <span class="badge bg-{{ customer.statusColor }}">{{ customer.statusLabel }}</span>
+                                        <br>
+                                        <small class="text-muted">{{ customer.createdAt|date('d/m/Y') }}</small>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Clients VIP -->
+        <div class="col-lg-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-crown mr-1"></i>Clients VIP
+                    </h6>
+                    <a href="{{ path('app_customer_index', {'status': 'vip'}) }}" class="btn btn-sm btn-outline-primary">
+                        Voir tout
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if vipCustomers is empty %}
+                        <p class="text-muted text-center">Aucun client VIP</p>
+                    {% else %}
+                        <div class="list-group list-group-flush">
+                            {% for customer in vipCustomers|slice(0, 5) %}
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="fw-bold">{{ customer.fullName }}</div>
+                                        <small class="text-muted">
+                                            {% if customer.company %}{{ customer.company }}{% else %}{{ customer.email }}{% endif %}
+                                        </small>
+                                    </div>
+                                    <div class="text-end">
+                                        {% if customer.assignedTo %}
+                                            <small class="text-muted">Assigné à {{ customer.assignedTo.fullName }}</small>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Suivis en retard -->
+        <div class="col-lg-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-exclamation-triangle mr-1"></i>Suivis nécessaires
+                    </h6>
+                    <span class="badge bg-danger">{{ customersNeedingFollowUp|length }}</span>
+                </div>
+                <div class="card-body">
+                    {% if customersNeedingFollowUp is empty %}
+                        <p class="text-muted text-center">Aucun suivi en retard</p>
+                    {% else %}
+                        <div class="list-group list-group-flush">
+                            {% for customer in customersNeedingFollowUp|slice(0, 5) %}
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="fw-bold">{{ customer.fullName }}</div>
+                                        <small class="text-muted">
+                                            {% if customer.nextFollowUpAt %}
+                                                Suivi prévu le {{ customer.nextFollowUpAt|date('d/m/Y') }}
+                                            {% else %}
+                                                Aucun suivi programmé
+                                            {% endif %}
+                                        </small>
+                                    </div>
+                                    <div class="text-end">
+                                        <a href="{{ path('app_customer_show', {'id': customer.id}) }}" 
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Clients non assignés -->
+        <div class="col-lg-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-user-slash mr-1"></i>Clients non assignés
+                    </h6>
+                    <span class="badge bg-warning">{{ unassignedCustomers|length }}</span>
+                </div>
+                <div class="card-body">
+                    {% if unassignedCustomers is empty %}
+                        <p class="text-muted text-center">Tous les clients sont assignés</p>
+                    {% else %}
+                        <div class="list-group list-group-flush">
+                            {% for customer in unassignedCustomers|slice(0, 5) %}
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="fw-bold">{{ customer.fullName }}</div>
+                                        <small class="text-muted">{{ customer.email }}</small>
+                                    </div>
+                                    <div class="text-end">
+                                        <span class="badge bg-{{ customer.statusColor }}">{{ customer.statusLabel }}</span>
+                                        <br>
+                                        <a href="{{ path('app_customer_show', {'id': customer.id}) }}" 
+                                           class="btn btn-sm btn-outline-secondary mt-1">
+                                            <i class="fas fa-user-plus"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Actions rapides -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-bolt mr-1"></i>Actions rapides
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <a href="{{ path('app_customer_new') }}" class="btn btn-primary w-100">
+                                <i class="fas fa-user-plus mr-2"></i>Nouveau client
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="{{ path('app_customer_index', {'status': 'prospect'}) }}" class="btn btn-warning w-100">
+                                <i class="fas fa-user-clock mr-2"></i>Gérer les prospects
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="{{ path('app_customer_index', {'assignedTo': ''}) }}" class="btn btn-info w-100">
+                                <i class="fas fa-user-slash mr-2"></i>Clients non assignés
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="{{ path('app_customer_export') }}" class="btn btn-secondary w-100">
+                                <i class="fas fa-download mr-2"></i>Exporter les données
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Configuration du graphique des statuts
+    const ctx = document.getElementById('statusChart').getContext('2d');
+    const statusChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Prospects', 'Clients', 'VIP', 'Inactifs'],
+            datasets: [{
+                data: [
+                    {{ statistics.prospect }},
+                    {{ statistics.client }},
+                    {{ statistics.vip }},
+                    {{ statistics.inactif }}
+                ],
+                backgroundColor: [
+                    '#f6c23e', // warning
+                    '#1cc88a', // success
+                    '#e74a3b', // danger
+                    '#858796'  // secondary
+                ],
+                borderWidth: 2,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            cutout: '70%'
+        }
+    });
+});
+</script>
+{% endblock %}

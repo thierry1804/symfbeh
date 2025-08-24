@@ -1,0 +1,497 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ customer.fullName }} - Détails Client{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <!-- En-tête de la page -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('app_customer_index') }}">Clients</a></li>
+                    <li class="breadcrumb-item active">{{ customer.fullName }}</li>
+                </ol>
+            </nav>
+            <h1 class="h3 mb-0 text-gray-800">
+                <i class="fas fa-user mr-2"></i>{{ customer.fullName }}
+            </h1>
+            <p class="text-muted">
+                Client depuis le {{ customer.createdAt|date('d/m/Y') }}
+                {% if customer.assignedTo %}
+                    • Assigné à {{ customer.assignedTo.fullName }}
+                {% endif %}
+            </p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{{ path('app_customer_index') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left mr-1"></i>Retour
+            </a>
+            <a href="{{ path('app_customer_edit', {'id': customer.id}) }}" class="btn btn-primary">
+                <i class="fas fa-edit mr-1"></i>Modifier
+            </a>
+        </div>
+    </div>
+
+    <!-- Alertes et notifications -->
+    {% if customer.nextFollowUpAt %}
+        {% set daysUntil = customer.nextFollowUpAt|date('U') - 'now'|date('U') %}
+        {% set daysUntil = daysUntil / 86400 %}
+        {% if daysUntil < 0 %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-triangle mr-2"></i>
+                <strong>Suivi en retard !</strong> Le prochain suivi était prévu le {{ customer.nextFollowUpAt|date('d/m/Y') }}.
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% elseif daysUntil <= 3 %}
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <i class="fas fa-clock mr-2"></i>
+                <strong>Suivi à venir !</strong> Le prochain suivi est prévu le {{ customer.nextFollowUpAt|date('d/m/Y') }}.
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endif %}
+    {% endif %}
+
+    <div class="row">
+        <!-- Informations principales -->
+        <div class="col-lg-8">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-info-circle mr-1"></i>Informations du Client
+                    </h6>
+                    <div class="d-flex gap-2">
+                        <span class="badge bg-{{ customer.statusColor }} fs-6">
+                            {{ customer.statusLabel }}
+                        </span>
+                        {% if not customer.isActive %}
+                            <span class="badge bg-secondary">Inactif</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-primary mb-3">Informations personnelles</h6>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td class="fw-bold" width="120">Nom complet :</td>
+                                    <td>{{ customer.fullName }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Email :</td>
+                                    <td>
+                                        <a href="mailto:{{ customer.email }}">{{ customer.email }}</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Téléphone :</td>
+                                    <td>
+                                        {% if customer.phone %}
+                                            <a href="tel:{{ customer.phone }}">{{ customer.phone }}</a>
+                                        {% else %}
+                                            <span class="text-muted">Non renseigné</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Mobile :</td>
+                                    <td>
+                                        {% if customer.mobile %}
+                                            <a href="tel:{{ customer.mobile }}">{{ customer.mobile }}</a>
+                                        {% else %}
+                                            <span class="text-muted">Non renseigné</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-primary mb-3">Informations professionnelles</h6>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td class="fw-bold" width="120">Entreprise :</td>
+                                    <td>
+                                        {% if customer.company %}
+                                            {{ customer.company }}
+                                        {% else %}
+                                            <span class="text-muted">Non renseigné</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Poste :</td>
+                                    <td>
+                                        {% if customer.jobTitle %}
+                                            {{ customer.jobTitle }}
+                                        {% else %}
+                                            <span class="text-muted">Non renseigné</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Revenu annuel :</td>
+                                    <td>
+                                        {% if customer.annualRevenue %}
+                                            {{ customer.annualRevenue|number_format(0, ',', ' ') }} €
+                                        {% else %}
+                                            <span class="text-muted">Non renseigné</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Employés :</td>
+                                    <td>
+                                        {% if customer.employeeCount %}
+                                            {{ customer.employeeCount }}
+                                        {% else %}
+                                            <span class="text-muted">Non renseigné</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    {% if customer.address or customer.city or customer.country %}
+                        <hr>
+                        <h6 class="text-primary mb-3">Adresse</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% if customer.address %}
+                                    <p class="mb-1"><strong>Adresse :</strong> {{ customer.address }}</p>
+                                {% endif %}
+                                {% if customer.postalCode or customer.city %}
+                                    <p class="mb-1">
+                                        <strong>Ville :</strong> 
+                                        {% if customer.postalCode %}{{ customer.postalCode }}{% endif %}
+                                        {% if customer.city %} {{ customer.city }}{% endif %}
+                                    </p>
+                                {% endif %}
+                                {% if customer.country %}
+                                    <p class="mb-1"><strong>Pays :</strong> {{ customer.country }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if customer.website or customer.linkedin or customer.twitter %}
+                        <hr>
+                        <h6 class="text-primary mb-3">Réseaux sociaux</h6>
+                        <div class="d-flex gap-2">
+                            {% if customer.website %}
+                                <a href="{{ customer.website }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-globe mr-1"></i>Site web
+                                </a>
+                            {% endif %}
+                            {% if customer.linkedin %}
+                                <a href="{{ customer.linkedin }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                                    <i class="fab fa-linkedin mr-1"></i>LinkedIn
+                                </a>
+                            {% endif %}
+                            {% if customer.twitter %}
+                                <a href="{{ customer.twitter }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                                    <i class="fab fa-twitter mr-1"></i>Twitter
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if customer.notes %}
+                        <hr>
+                        <h6 class="text-primary mb-3">Notes</h6>
+                        <div class="bg-light p-3 rounded">
+                            {{ customer.notes|nl2br }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Historique et suivi -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-history mr-1"></i>Historique et Suivi
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-primary mb-3">Informations de suivi</h6>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td class="fw-bold" width="140">Source :</td>
+                                    <td>
+                                        {% if customer.source %}
+                                            {{ customer.source|title }}
+                                        {% else %}
+                                            <span class="text-muted">Non renseigné</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Dernier contact :</td>
+                                    <td>
+                                        {% if customer.lastContactAt %}
+                                            {{ customer.lastContactAt|date('d/m/Y à H:i') }}
+                                        {% else %}
+                                            <span class="text-muted">Jamais</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Prochain suivi :</td>
+                                    <td>
+                                        {% if customer.nextFollowUpAt %}
+                                            {{ customer.nextFollowUpAt|date('d/m/Y') }}
+                                            {% set daysUntil = customer.nextFollowUpAt|date('U') - 'now'|date('U') %}
+                                            {% set daysUntil = daysUntil / 86400 %}
+                                            {% if daysUntil < 0 %}
+                                                <span class="badge bg-danger ms-2">En retard</span>
+                                            {% elseif daysUntil <= 3 %}
+                                                <span class="badge bg-warning ms-2">Bientôt</span>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="text-muted">Non programmé</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Assigné à :</td>
+                                    <td>
+                                        {% if customer.assignedTo %}
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-sm bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center me-2">
+                                                    {{ customer.assignedTo.firstName|first|upper }}{{ customer.assignedTo.lastName|first|upper }}
+                                                </div>
+                                                {{ customer.assignedTo.fullName }}
+                                            </div>
+                                        {% else %}
+                                            <span class="text-muted">Non assigné</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-primary mb-3">Actions rapides</h6>
+                            <div class="d-grid gap-2">
+                                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#scheduleFollowUpModal">
+                                    <i class="fas fa-calendar-plus mr-1"></i>Programmer un suivi
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#assignModal">
+                                    <i class="fas fa-user-plus mr-1"></i>Assigner à un utilisateur
+                                </button>
+                                <button type="button" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#updateStatusModal">
+                                    <i class="fas fa-tags mr-1"></i>Changer le statut
+                                </button>
+                                {% if not customer.isActive %}
+                                    <form action="{{ path('app_customer_activate', {'id': customer.id}) }}" method="post" style="display: inline;">
+                                        <button type="submit" class="btn btn-outline-success w-100">
+                                            <i class="fas fa-check mr-1"></i>Réactiver le client
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar avec actions et statistiques -->
+        <div class="col-lg-4">
+            <!-- Actions rapides -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-cogs mr-1"></i>Actions
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="mailto:{{ customer.email }}" class="btn btn-primary">
+                            <i class="fas fa-envelope mr-1"></i>Envoyer un email
+                        </a>
+                        {% if customer.phone %}
+                            <a href="tel:{{ customer.phone }}" class="btn btn-success">
+                                <i class="fas fa-phone mr-1"></i>Appeler
+                            </a>
+                        {% endif %}
+                        {% if customer.mobile %}
+                            <a href="tel:{{ customer.mobile }}" class="btn btn-info">
+                                <i class="fas fa-mobile-alt mr-1"></i>Appeler mobile
+                            </a>
+                        {% endif %}
+                        <a href="{{ path('app_customer_edit', {'id': customer.id}) }}" class="btn btn-secondary">
+                            <i class="fas fa-edit mr-1"></i>Modifier
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Informations système -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-database mr-1"></i>Informations système
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm table-borderless">
+                        <tr>
+                            <td class="fw-bold">ID :</td>
+                            <td>{{ customer.id }}</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Créé le :</td>
+                            <td>{{ customer.createdAt|date('d/m/Y à H:i') }}</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Modifié le :</td>
+                            <td>
+                                {% if customer.updatedAt %}
+                                    {{ customer.updatedAt|date('d/m/Y à H:i') }}
+                                {% else %}
+                                    <span class="text-muted">Jamais</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">État :</td>
+                            <td>
+                                {% if customer.isActive %}
+                                    <span class="badge bg-success">Actif</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Inactif</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tags -->
+            {% if customer.tagsArray|length > 0 %}
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">
+                            <i class="fas fa-tags mr-1"></i>Tags
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex flex-wrap gap-1">
+                            {% for tag in customer.tagsArray %}
+                                <span class="badge bg-light text-dark">{{ tag }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Modal pour programmer un suivi -->
+<div class="modal fade" id="scheduleFollowUpModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Programmer un suivi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ path('app_customer_schedule_follow_up', {'id': customer.id}) }}" method="post">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="nextFollowUpAt" class="form-label">Date du prochain suivi</label>
+                        <input type="date" class="form-control" id="nextFollowUpAt" name="nextFollowUpAt" required>
+                    </div>
+                    <p class="text-muted small">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Le dernier contact sera automatiquement mis à jour à aujourd'hui.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Programmer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal pour assigner -->
+<div class="modal fade" id="assignModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Assigner le client</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ path('app_customer_assign', {'id': customer.id}) }}" method="post">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="assignedTo" class="form-label">Assigner à</label>
+                        <select class="form-select" id="assignedTo" name="assignedTo">
+                            <option value="">Aucun utilisateur</option>
+                            {% for user in users %}
+                                <option value="{{ user.id }}" {{ customer.assignedTo and customer.assignedTo.id == user.id ? 'selected' : '' }}>
+                                    {{ user.fullName }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Assigner</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal pour changer le statut -->
+<div class="modal fade" id="updateStatusModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Changer le statut</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ path('app_customer_update_status', {'id': customer.id}) }}" method="post">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="status" class="form-label">Nouveau statut</label>
+                        <select class="form-select" id="status" name="status" required>
+                            <option value="prospect" {{ customer.status == 'prospect' ? 'selected' : '' }}>Prospect</option>
+                            <option value="client" {{ customer.status == 'client' ? 'selected' : '' }}>Client</option>
+                            <option value="vip" {{ customer.status == 'vip' ? 'selected' : '' }}>VIP</option>
+                            <option value="inactif" {{ customer.status == 'inactif' ? 'selected' : '' }}>Inactif</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Changer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Définir la date minimale pour le suivi (aujourd'hui)
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('nextFollowUpAt').min = today;
+    
+    // Pré-remplir avec demain par défaut
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    document.getElementById('nextFollowUpAt').value = tomorrow.toISOString().split('T')[0];
+});
+</script>
+{% endblock %}

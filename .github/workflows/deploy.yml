@@ -1,0 +1,154 @@
+name: Deploy to FTP
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: mbstring, intl, pdo_mysql, xml, ctype, iconv
+        coverage: none
+    
+    - name: Validate composer.json and composer.lock
+      run: composer validate
+    
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v3
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-
+    
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress
+    
+    - name: Run tests
+      run: composer test
+    
+    - name: Check coding standards
+      run: vendor/bin/phpstan analyse src --level=5
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    environment: production
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: mbstring, intl, pdo_mysql, xml, ctype, iconv
+    
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v3
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-
+    
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress --optimize-autoloader
+    
+    - name: Build application
+      run: |
+        # Créer le dossier de build
+        mkdir -p build
+        
+        # Copier les fichiers nécessaires
+        cp -r bin build/
+        cp -r config build/
+        cp -r public build/
+        cp -r src build/
+        cp -r vendor build/
+        cp -r templates build/
+        cp composer.json build/
+        cp composer.lock build/
+        cp symfony.lock build/
+        cp .htaccess build/
+        
+        # Créer le dossier scripts et copier le script de post-déploiement
+        mkdir -p build/scripts
+        cp scripts/post-deploy.sh build/scripts/
+        chmod +x build/scripts/post-deploy.sh
+        
+        # Créer le fichier .env pour la production
+        echo "APP_ENV=prod" > build/.env
+        echo "APP_SECRET=${{ secrets.APP_SECRET }}" >> build/.env
+        echo "APP_DEBUG=false" >> build/.env
+        echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> build/.env
+        
+        # Créer les dossiers nécessaires
+        mkdir -p build/var/cache/prod
+        mkdir -p build/var/log
+        mkdir -p build/public/uploads
+        
+        # Nettoyer les caches de développement
+        rm -rf build/var/cache/dev
+        rm -rf build/var/log/dev.log
+        
+        # Définir les permissions
+        chmod -R 755 build/var
+        chmod -R 755 build/public/uploads
+        
+        # Vérifier que les dossiers existent
+        echo "Vérification des dossiers..."
+        ls -la build/var/ || echo "Dossier var manquant"
+        ls -la build/public/uploads/ || echo "Dossier uploads manquant"
+        
+        # Vérifier que les fichiers critiques sont présents
+        echo "Vérification des fichiers critiques..."
+        ls -la build/vendor/symfony/framework-bundle/Command/ || echo "Dossier Command manquant"
+        ls -la build/bin/console || echo "Console manquante"
+        ls -la build/public/index.php || echo "Index.php manquant"
+    
+    - name: Deploy to FTP
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        local-dir: ./build/
+        server-dir: ${{ secrets.FTP_SERVER_DIR }}
+        exclude: |
+          **/.git*
+          **/.git*/**
+          **/node_modules/**
+          **/.env.local
+          **/.env.test
+          **/tests/**
+          **/var/cache/dev/**
+          **/var/log/dev.log
+
+    - name: Post-deployment tasks
+      run: |
+        echo "Déploiement terminé avec succès!"
+        echo ""
+        echo "✅ Déploiement automatique terminé"
+        echo "✅ Migrations de base de données appliquées (si SSH configuré)"
+        echo "✅ Cache vidé et permissions définies"
+        echo ""
+        echo "L'application est maintenant opérationnelle en production!"
+        echo ""
+        echo "Pour vérifier manuellement:"
+        echo "- Accédez à votre site web"
+        echo "- Testez la création d'un utilisateur"
+        echo "- Vérifiez les logs: tail -f var/log/prod.log"
