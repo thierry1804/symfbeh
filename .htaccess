@@ -1,0 +1,53 @@
+RewriteEngine On
+
+<IfModule mod_headers.c>
+    Header always unset X-Robots-Tag
+    Header always set X-Robots-Tag "index, follow"
+</IfModule>
+
+# Compression Gzip pour améliorer les performances
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+</IfModule>
+
+# Cache des navigateurs pour les assets statiques
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpg "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/gif "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/webp "access plus 1 month"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/pdf "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType application/x-javascript "access plus 1 month"
+    ExpiresByType application/x-shockwave-flash "access plus 1 month"
+    ExpiresByType image/x-icon "access plus 1 year"
+    ExpiresDefault "access plus 2 days"
+</IfModule>
+
+# Redirection de la racine directement vers public/index.php
+RewriteRule ^/?$ public/index.php [L]
+
+# Ne pas réécrire les fichiers qui existent déjà
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^ - [L]
+
+# Assets et fichiers statiques
+RewriteRule ^assets/(.*)$ public/assets/$1 [L]
+RewriteRule ^favicon\.ico$ public/favicon.ico [L]
+RewriteRule ^(.*\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|map|json|txt))$ public/$1 [L]
+
+RewriteRule ^uploads/(.*)$ public/uploads/$1 [L]
+
+# Toutes les autres routes vers Symfony
+RewriteRule ^(.*)$ public/index.php [QSA,L]
