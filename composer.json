@@ -1,4 +1,6 @@
 {
+    "name": "thierry1804/symfbeh",
+    "description": "Système CRM Symfony avec gestion complète des clients et interface d'administration moderne",
     "type": "project",
     "license": "proprietary",
     "minimum-stability": "stable",
