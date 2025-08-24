@@ -1,122 +1,621 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{% block title %}Application Retail{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-            <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-            <style>
-                .navbar-brand {
-                    font-weight: bold;
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Retail Dashboard{% endblock %}</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+    {% block stylesheets %}
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <style>
+            :root {
+                --primary-color: #009ef7;
+                --secondary-color: #f1f1f2;
+                --success-color: #50cd89;
+                --info-color: #7239ea;
+                --warning-color: #ffc700;
+                --danger-color: #f1416c;
+                --dark-color: #181c32;
+                --light-color: #f9f9f9;
+                --sidebar-width: 265px;
+                --header-height: 70px;
+            }
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: 'Inter', sans-serif;
+                background-color: #f5f8fa;
+                color: #3f4254;
+                overflow-x: hidden;
+            }
+
+            /* Sidebar */
+            .sidebar {
+                position: fixed;
+                left: 0;
+                top: 0;
+                height: 100vh;
+                width: var(--sidebar-width);
+                background: linear-gradient(180deg, #1e1e2d 0%, #1a1a27 100%);
+                z-index: 1000;
+                transition: all 0.3s ease;
+                overflow-y: auto;
+            }
+
+            .sidebar-header {
+                padding: 1.5rem;
+                border-bottom: 1px solid #2b2b40;
+                text-align: center;
+            }
+
+            .sidebar-brand {
+                color: #ffffff;
+                font-size: 1.5rem;
+                font-weight: 700;
+                text-decoration: none;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.5rem;
+            }
+
+            .sidebar-brand:hover {
+                color: var(--primary-color);
+            }
+
+            .sidebar-nav {
+                padding: 1rem 0;
+            }
+
+            .nav-section {
+                margin-bottom: 1.5rem;
+            }
+
+            .nav-section-title {
+                color: #6c7293;
+                font-size: 0.75rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.1rem;
+                padding: 0 1.5rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .nav-item {
+                list-style: none;
+            }
+
+            .nav-link {
+                display: flex;
+                align-items: center;
+                padding: 0.75rem 1.5rem;
+                color: #a1a5b7;
+                text-decoration: none;
+                transition: all 0.3s ease;
+                border-left: 3px solid transparent;
+            }
+
+            .nav-link:hover {
+                color: #ffffff;
+                background-color: rgba(255, 255, 255, 0.05);
+                border-left-color: var(--primary-color);
+            }
+
+            .nav-link.active {
+                color: #ffffff;
+                background-color: rgba(0, 158, 247, 0.1);
+                border-left-color: var(--primary-color);
+            }
+
+            .nav-icon {
+                width: 20px;
+                margin-right: 0.75rem;
+                text-align: center;
+            }
+
+            /* Header */
+            .header {
+                position: fixed;
+                top: 0;
+                left: var(--sidebar-width);
+                right: 0;
+                height: var(--header-height);
+                background: #ffffff;
+                border-bottom: 1px solid #e1e3ea;
+                z-index: 999;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0 2rem;
+                transition: all 0.3s ease;
+            }
+
+            .header-left {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+            }
+
+            .sidebar-toggle {
+                background: none;
+                border: none;
+                color: #7e8299;
+                font-size: 1.25rem;
+                cursor: pointer;
+                padding: 0.5rem;
+                border-radius: 0.475rem;
+                transition: all 0.3s ease;
+            }
+
+            .sidebar-toggle:hover {
+                background-color: #f1f1f2;
+                color: var(--primary-color);
+            }
+
+            .page-title {
+                font-size: 1.25rem;
+                font-weight: 600;
+                color: #181c32;
+                margin: 0;
+            }
+
+            .header-right {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+            }
+
+            .header-search {
+                position: relative;
+            }
+
+            .search-input {
+                background: #f5f8fa;
+                border: 1px solid #e1e3ea;
+                border-radius: 0.475rem;
+                padding: 0.5rem 1rem 0.5rem 2.5rem;
+                width: 300px;
+                font-size: 0.875rem;
+            }
+
+            .search-input:focus {
+                outline: none;
+                border-color: var(--primary-color);
+                box-shadow: 0 0 0 0.2rem rgba(0, 158, 247, 0.25);
+            }
+
+            .search-icon {
+                position: absolute;
+                left: 0.75rem;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #7e8299;
+            }
+
+            .header-actions {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .action-btn {
+                background: none;
+                border: none;
+                color: #7e8299;
+                font-size: 1.125rem;
+                padding: 0.5rem;
+                border-radius: 0.475rem;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                position: relative;
+            }
+
+            .action-btn:hover {
+                background-color: #f1f1f2;
+                color: var(--primary-color);
+            }
+
+            .notification-badge {
+                position: absolute;
+                top: 0.25rem;
+                right: 0.25rem;
+                background: var(--danger-color);
+                color: white;
+                font-size: 0.625rem;
+                padding: 0.125rem 0.25rem;
+                border-radius: 0.25rem;
+                min-width: 1rem;
+                text-align: center;
+            }
+
+            .user-menu {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                cursor: pointer;
+                padding: 0.5rem;
+                border-radius: 0.475rem;
+                transition: all 0.3s ease;
+            }
+
+            .user-menu:hover {
+                background-color: #f1f1f2;
+            }
+
+            .user-avatar {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, var(--primary-color), var(--info-color));
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-weight: 600;
+                font-size: 0.875rem;
+            }
+
+            .user-info {
+                display: none;
+            }
+
+            .user-name {
+                font-weight: 600;
+                color: #181c32;
+                font-size: 0.875rem;
+            }
+
+            .user-role {
+                color: #7e8299;
+                font-size: 0.75rem;
+            }
+
+            /* Main Content */
+            .main-content {
+                margin-left: var(--sidebar-width);
+                margin-top: var(--header-height);
+                padding: 2rem;
+                min-height: calc(100vh - var(--header-height));
+                transition: all 0.3s ease;
+            }
+
+            .content-header {
+                margin-bottom: 2rem;
+            }
+
+            .content-title {
+                font-size: 1.75rem;
+                font-weight: 700;
+                color: #181c32;
+                margin-bottom: 0.5rem;
+            }
+
+            .content-subtitle {
+                color: #7e8299;
+                font-size: 1rem;
+            }
+
+            /* Cards */
+            .card {
+                background: #ffffff;
+                border: 1px solid #e1e3ea;
+                border-radius: 0.475rem;
+                box-shadow: 0 0 20px 0 rgba(76, 87, 125, 0.02);
+                transition: all 0.3s ease;
+            }
+
+            .card:hover {
+                box-shadow: 0 0 20px 0 rgba(76, 87, 125, 0.1);
+            }
+
+            .card-header {
+                background: #ffffff;
+                border-bottom: 1px solid #e1e3ea;
+                padding: 1.5rem;
+                border-radius: 0.475rem 0.475rem 0 0;
+            }
+
+            .card-title {
+                font-size: 1.125rem;
+                font-weight: 600;
+                color: #181c32;
+                margin: 0;
+            }
+
+            .card-body {
+                padding: 1.5rem;
+            }
+
+            /* Buttons */
+            .btn {
+                border-radius: 0.475rem;
+                font-weight: 500;
+                padding: 0.75rem 1.5rem;
+                transition: all 0.3s ease;
+            }
+
+            .btn-primary {
+                background: var(--primary-color);
+                border-color: var(--primary-color);
+            }
+
+            .btn-primary:hover {
+                background: #0095e8;
+                border-color: #0095e8;
+            }
+
+            /* Alerts */
+            .alert {
+                border-radius: 0.475rem;
+                border: none;
+                padding: 1rem 1.5rem;
+            }
+
+            /* Responsive */
+            @media (max-width: 991.98px) {
+                .sidebar {
+                    transform: translateX(-100%);
                 }
-                .user-menu {
-                    margin-left: auto;
+
+                .sidebar.show {
+                    transform: translateX(0);
                 }
+
+                .header {
+                    left: 0;
+                }
+
                 .main-content {
-                    min-height: calc(100vh - 200px);
+                    margin-left: 0;
                 }
-                .footer {
-                    background-color: #f8f9fa;
-                    padding: 20px 0;
-                    margin-top: 50px;
+
+                .search-input {
+                    width: 200px;
                 }
-            </style>
-        {% endblock %}
 
-        {% block javascripts %}
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-        {% endblock %}
-    </head>
-    <body>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-            <div class="container">
-                {% if app.user %}
-                    <a class="navbar-brand" href="{{ path('app_home') }}">
-                        <i class="fas fa-shopping-cart me-2"></i>Retail App
-                    </a>
-                {% else %}
-                    <span class="navbar-brand">
-                        <i class="fas fa-shopping-cart me-2"></i>Retail App
-                    </span>
-                {% endif %}
-                
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav me-auto">
-                        {% if app.user %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ path('app_home') }}">
-                                    <i class="fas fa-home me-1"></i>Accueil
-                                </a>
-                            </li>
-                        {% endif %}
-                    </ul>
-                    
-                    <ul class="navbar-nav user-menu">
-                        {% if app.user %}
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                                    <i class="fas fa-user me-1"></i>{{ app.user.fullName }}
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="{{ path('app_profile') }}">
-                                        <i class="fas fa-user-cog me-2"></i>Mon Profil
-                                    </a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="{{ path('app_logout') }}">
-                                        <i class="fas fa-sign-out-alt me-2"></i>Déconnexion
-                                    </a></li>
-                                </ul>
-                            </li>
-                        {% else %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ path('app_login') }}">
-                                    <i class="fas fa-sign-in-alt me-1"></i>Connexion
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ path('app_register') }}">
-                                    <i class="fas fa-user-plus me-1"></i>Inscription
-                                </a>
-                            </li>
-                        {% endif %}
-                    </ul>
-                </div>
-            </div>
-        </nav>
+                .user-info {
+                    display: none;
+                }
+            }
 
-        <div class="container main-content">
-            {% for label, messages in app.flashes %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ label == 'error' ? 'danger' : label }} alert-dismissible fade show mt-3" role="alert">
-                        <i class="fas fa-{{ label == 'success' ? 'check-circle' : (label == 'error' ? 'exclamation-triangle' : 'info-circle') }} me-2"></i>
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                {% endfor %}
-            {% endfor %}
+            @media (max-width: 767.98px) {
+                .header {
+                    padding: 0 1rem;
+                }
 
-            {% block body %}{% endblock %}
+                .main-content {
+                    padding: 1rem;
+                }
+
+                .search-input {
+                    display: none;
+                }
+            }
+
+            /* Overlay for mobile */
+            .sidebar-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 999;
+                display: none;
+            }
+
+            .sidebar-overlay.show {
+                display: block;
+            }
+        </style>
+    {% endblock %}
+</head>
+<body>
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="{{ path('app_home') }}" class="sidebar-brand">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Retail</span>
+            </a>
         </div>
 
-        <footer class="footer">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-6">
-                        <h5>Retail App</h5>
-                        <p class="text-muted">Application de gestion retail moderne et intuitive.</p>
+        <div class="sidebar-nav">
+            <div class="nav-section">
+                <div class="nav-section-title">Menu Principal</div>
+                <ul class="nav-item">
+                    <li>
+                        <a href="{{ path('app_home') }}" class="nav-link {{ app.request.get('_route') == 'app_home' ? 'active' : '' }}">
+                            <i class="fas fa-home nav-icon"></i>
+                            <span>Tableau de bord</span>
+                        </a>
+                    </li>
+                    {% if app.user %}
+                        <li>
+                            <a href="{{ path('app_profile') }}" class="nav-link {{ app.request.get('_route') == 'app_profile' ? 'active' : '' }}">
+                                <i class="fas fa-user nav-icon"></i>
+                                <span>Mon Profil</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+
+            {% if app.user %}
+                <div class="nav-section">
+                    <div class="nav-section-title">Gestion</div>
+                    <ul class="nav-item">
+                        <li>
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-chart-line nav-icon"></i>
+                                <span>Analytics</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-box nav-icon"></i>
+                                <span>Produits</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-users nav-icon"></i>
+                                <span>Clients</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-shopping-cart nav-icon"></i>
+                                <span>Commandes</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Système</div>
+                    <ul class="nav-item">
+                        <li>
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-cog nav-icon"></i>
+                                <span>Paramètres</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ path('app_logout') }}" class="nav-link">
+                                <i class="fas fa-sign-out-alt nav-icon"></i>
+                                <span>Déconnexion</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            {% else %}
+                <div class="nav-section">
+                    <div class="nav-section-title">Authentification</div>
+                    <ul class="nav-item">
+                        <li>
+                            <a href="{{ path('app_login') }}" class="nav-link {{ app.request.get('_route') == 'app_login' ? 'active' : '' }}">
+                                <i class="fas fa-sign-in-alt nav-icon"></i>
+                                <span>Connexion</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ path('app_register') }}" class="nav-link {{ app.request.get('_route') == 'app_register' ? 'active' : '' }}">
+                                <i class="fas fa-user-plus nav-icon"></i>
+                                <span>Inscription</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            {% endif %}
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h1 class="page-title">{% block page_title %}Tableau de bord{% endblock %}</h1>
+        </div>
+
+        <div class="header-right">
+            <div class="header-search">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="Rechercher...">
+            </div>
+
+            <div class="header-actions">
+                <button class="action-btn" title="Notifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </button>
+                <button class="action-btn" title="Messages">
+                    <i class="fas fa-envelope"></i>
+                </button>
+                <button class="action-btn" title="Paramètres">
+                    <i class="fas fa-cog"></i>
+                </button>
+            </div>
+
+            {% if app.user %}
+                <div class="user-menu dropdown-toggle" data-bs-toggle="dropdown">
+                    <div class="user-avatar">
+                        {{ app.user.fullName|first|upper }}
                     </div>
-                    <div class="col-md-6 text-md-end">
-                        <p class="text-muted">&copy; {{ "now"|date("Y") }} Retail App. Tous droits réservés.</p>
+                    <div class="user-info">
+                        <div class="user-name">{{ app.user.fullName }}</div>
+                        <div class="user-role">Administrateur</div>
                     </div>
                 </div>
-            </div>
-        </footer>
-    </body>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="{{ path('app_profile') }}">
+                        <i class="fas fa-user me-2"></i>Mon Profil
+                    </a></li>
+                    <li><a class="dropdown-item" href="#">
+                        <i class="fas fa-cog me-2"></i>Paramètres
+                    </a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{{ path('app_logout') }}">
+                        <i class="fas fa-sign-out-alt me-2"></i>Déconnexion
+                    </a></li>
+                </ul>
+            {% endif %}
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label == 'error' ? 'danger' : label }} alert-dismissible fade show mb-4" role="alert">
+                    <i class="fas fa-{{ label == 'success' ? 'check-circle' : (label == 'error' ? 'exclamation-triangle' : 'info-circle') }} me-2"></i>
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        {% block body %}{% endblock %}
+    </main>
+
+    {% block javascripts %}
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            // Sidebar toggle functionality
+            document.addEventListener('DOMContentLoaded', function() {
+                const sidebarToggle = document.getElementById('sidebarToggle');
+                const sidebar = document.getElementById('sidebar');
+                const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+                function toggleSidebar() {
+                    sidebar.classList.toggle('show');
+                    sidebarOverlay.classList.toggle('show');
+                }
+
+                sidebarToggle.addEventListener('click', toggleSidebar);
+                sidebarOverlay.addEventListener('click', toggleSidebar);
+
+                // Close sidebar on window resize if screen becomes large
+                window.addEventListener('resize', function() {
+                    if (window.innerWidth > 991.98) {
+                        sidebar.classList.remove('show');
+                        sidebarOverlay.classList.remove('show');
+                    }
+                });
+            });
+        </script>
+    {% endblock %}
+</body>
 </html>

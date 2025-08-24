@@ -1,30 +1,118 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Accueil - Retail App{% endblock %}
+{% block title %}Tableau de bord - Retail App{% endblock %}
+{% block page_title %}Tableau de bord{% endblock %}
 
 {% block body %}
-<div class="row">
-    <div class="col-12">
-        <div class="jumbotron bg-light p-5 rounded">
-            <h1 class="display-4">
-                <i class="fas fa-shopping-cart text-primary me-3"></i>
-                Bienvenue sur Retail App
-            </h1>
-            <p class="lead">
-                Application moderne de gestion retail pour optimiser votre entreprise.
-            </p>
-            <hr class="my-4">
-            
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="card text-center mb-3">
-                        <div class="card-body">
-                            <i class="fas fa-user-cog fa-3x text-info mb-3"></i>
-                            <h5 class="card-title">Mon Profil</h5>
-                            <p class="card-text">Gérez vos informations personnelles.</p>
-                            <a href="{{ path('app_profile') }}" class="btn btn-info">
-                                <i class="fas fa-user me-2"></i>Mon profil
-                            </a>
+<!-- Content Header -->
+<div class="content-header">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="content-title">Bienvenue, {{ app.user.fullName }}!</h1>
+            <p class="content-subtitle">Voici un aperçu de votre activité retail aujourd'hui</p>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-primary">
+                <i class="fas fa-download me-2"></i>Exporter
+            </button>
+            <button class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>Nouvelle vente
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-muted fw-semibold fs-7">Ventes du jour</div>
+                        <div class="fs-2 fw-bold text-dark">€2,847</div>
+                        <div class="d-flex align-items-center mt-2">
+                            <span class="badge badge-light-success fs-8 fw-bold me-2">
+                                <i class="fas fa-arrow-up me-1"></i>+2.5%
+                            </span>
+                            <span class="text-muted fs-7">vs hier</span>
+                        </div>
+                    </div>
+                    <div class="symbol symbol-50px">
+                        <div class="symbol-label bg-light-primary">
+                            <i class="fas fa-chart-line text-primary fs-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-muted fw-semibold fs-7">Commandes</div>
+                        <div class="fs-2 fw-bold text-dark">156</div>
+                        <div class="d-flex align-items-center mt-2">
+                            <span class="badge badge-light-success fs-8 fw-bold me-2">
+                                <i class="fas fa-arrow-up me-1"></i>+12%
+                            </span>
+                            <span class="text-muted fs-7">vs hier</span>
+                        </div>
+                    </div>
+                    <div class="symbol symbol-50px">
+                        <div class="symbol-label bg-light-info">
+                            <i class="fas fa-shopping-bag text-info fs-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-muted fw-semibold fs-7">Clients</div>
+                        <div class="fs-2 fw-bold text-dark">89</div>
+                        <div class="d-flex align-items-center mt-2">
+                            <span class="badge badge-light-warning fs-8 fw-bold me-2">
+                                <i class="fas fa-arrow-down me-1"></i>-1.2%
+                            </span>
+                            <span class="text-muted fs-7">vs hier</span>
+                        </div>
+                    </div>
+                    <div class="symbol symbol-50px">
+                        <div class="symbol-label bg-light-warning">
+                            <i class="fas fa-users text-warning fs-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-muted fw-semibold fs-7">Produits vendus</div>
+                        <div class="fs-2 fw-bold text-dark">342</div>
+                        <div class="d-flex align-items-center mt-2">
+                            <span class="badge badge-light-success fs-8 fw-bold me-2">
+                                <i class="fas fa-arrow-up me-1"></i>+8.4%
+                            </span>
+                            <span class="text-muted fs-7">vs hier</span>
+                        </div>
+                    </div>
+                    <div class="symbol symbol-50px">
+                        <div class="symbol-label bg-light-success">
+                            <i class="fas fa-box text-success fs-2x"></i>
                         </div>
                     </div>
                 </div>
@@ -33,44 +121,332 @@
     </div>
 </div>
 
-<div class="row mt-4">
-    <div class="col-12">
+<!-- Charts and Analytics -->
+<div class="row mb-4">
+    <div class="col-xl-8 mb-4">
         <div class="card">
             <div class="card-header">
-                <h5 class="mb-0">
-                    <i class="fas fa-info-circle me-2"></i>
-                    Informations de votre compte
-                </h5>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="card-title">Évolution des ventes</h3>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            Cette semaine
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Aujourd'hui</a></li>
+                            <li><a class="dropdown-item" href="#">Cette semaine</a></li>
+                            <li><a class="dropdown-item" href="#">Ce mois</a></li>
+                            <li><a class="dropdown-item" href="#">Cette année</a></li>
+                        </ul>
+                    </div>
+                </div>
             </div>
             <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <p><strong>Nom complet :</strong> {{ app.user.fullName }}</p>
-                        <p><strong>Email :</strong> {{ app.user.email }}</p>
-                        <p><strong>Compte créé le :</strong> {{ app.user.createdAt|date('d/m/Y à H:i') }}</p>
+                <div class="chart-container" style="height: 300px;">
+                    <canvas id="salesChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Top produits</h3>
+            </div>
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="symbol symbol-40px me-3">
+                        <img src="https://via.placeholder.com/40" alt="Product" class="rounded">
                     </div>
-                    <div class="col-md-6">
-                        <p><strong>Statut :</strong> 
-                            {% if app.user.isActive %}
-                                <span class="badge bg-success">Actif</span>
-                            {% else %}
-                                <span class="badge bg-danger">Inactif</span>
-                            {% endif %}
-                        </p>
-                        <p><strong>Vérification email :</strong> 
-                            {% if app.user.isVerified %}
-                                <span class="badge bg-success">Vérifié</span>
-                            {% else %}
-                                <span class="badge bg-warning">Non vérifié</span>
-                            {% endif %}
-                        </p>
-                        {% if app.user.lastLoginAt %}
-                            <p><strong>Dernière connexion :</strong> {{ app.user.lastLoginAt|date('d/m/Y à H:i') }}</p>
-                        {% endif %}
+                    <div class="flex-grow-1">
+                        <div class="fw-bold">iPhone 14 Pro</div>
+                        <div class="text-muted fs-7">Électronique</div>
+                    </div>
+                    <div class="text-end">
+                        <div class="fw-bold">€1,199</div>
+                        <div class="text-success fs-7">+15%</div>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center mb-3">
+                    <div class="symbol symbol-40px me-3">
+                        <img src="https://via.placeholder.com/40" alt="Product" class="rounded">
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="fw-bold">Nike Air Max</div>
+                        <div class="text-muted fs-7">Chaussures</div>
+                    </div>
+                    <div class="text-end">
+                        <div class="fw-bold">€129</div>
+                        <div class="text-success fs-7">+8%</div>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center mb-3">
+                    <div class="symbol symbol-40px me-3">
+                        <img src="https://via.placeholder.com/40" alt="Product" class="rounded">
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="fw-bold">Samsung TV 55"</div>
+                        <div class="text-muted fs-7">Électronique</div>
+                    </div>
+                    <div class="text-end">
+                        <div class="fw-bold">€899</div>
+                        <div class="text-danger fs-7">-3%</div>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center">
+                    <div class="symbol symbol-40px me-3">
+                        <img src="https://via.placeholder.com/40" alt="Product" class="rounded">
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="fw-bold">MacBook Air</div>
+                        <div class="text-muted fs-7">Informatique</div>
+                    </div>
+                    <div class="text-end">
+                        <div class="fw-bold">€1,299</div>
+                        <div class="text-success fs-7">+22%</div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Recent Activity and Quick Actions -->
+<div class="row">
+    <div class="col-xl-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Activité récente</h3>
+            </div>
+            <div class="card-body">
+                <div class="timeline">
+                    <div class="timeline-item mb-3">
+                        <div class="timeline-badge bg-primary">
+                            <i class="fas fa-shopping-cart text-white"></i>
+                        </div>
+                        <div class="timeline-content ms-4">
+                            <div class="fw-bold">Nouvelle commande #1234</div>
+                            <div class="text-muted fs-7">Commande de €299 reçue il y a 5 minutes</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item mb-3">
+                        <div class="timeline-badge bg-success">
+                            <i class="fas fa-user-plus text-white"></i>
+                        </div>
+                        <div class="timeline-content ms-4">
+                            <div class="fw-bold">Nouveau client inscrit</div>
+                            <div class="text-muted fs-7">Marie Dupont s'est inscrite il y a 15 minutes</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item mb-3">
+                        <div class="timeline-badge bg-warning">
+                            <i class="fas fa-exclamation-triangle text-white"></i>
+                        </div>
+                        <div class="timeline-content ms-4">
+                            <div class="fw-bold">Stock faible</div>
+                            <div class="text-muted fs-7">iPhone 14 Pro - seulement 3 en stock</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-badge bg-info">
+                            <i class="fas fa-chart-line text-white"></i>
+                        </div>
+                        <div class="timeline-content ms-4">
+                            <div class="fw-bold">Objectif atteint</div>
+                            <div class="text-muted fs-7">Objectif de vente quotidien atteint à 105%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Actions rapides</h3>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-6">
+                        <a href="#" class="card action-card text-decoration-none">
+                            <div class="card-body text-center p-3">
+                                <i class="fas fa-plus-circle text-primary fs-1 mb-2"></i>
+                                <div class="fw-bold">Nouveau produit</div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="#" class="card action-card text-decoration-none">
+                            <div class="card-body text-center p-3">
+                                <i class="fas fa-user-plus text-info fs-1 mb-2"></i>
+                                <div class="fw-bold">Nouveau client</div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="#" class="card action-card text-decoration-none">
+                            <div class="card-body text-center p-3">
+                                <i class="fas fa-file-invoice text-success fs-1 mb-2"></i>
+                                <div class="fw-bold">Créer facture</div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="#" class="card action-card text-decoration-none">
+                            <div class="card-body text-center p-3">
+                                <i class="fas fa-chart-bar text-warning fs-1 mb-2"></i>
+                                <div class="fw-bold">Rapports</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Additional Styles -->
+<style>
+    .symbol {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.475rem;
+    }
+    
+    .symbol-50px {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .symbol-40px {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .bg-light-primary {
+        background-color: rgba(0, 158, 247, 0.1);
+    }
+    
+    .bg-light-info {
+        background-color: rgba(114, 57, 234, 0.1);
+    }
+    
+    .bg-light-warning {
+        background-color: rgba(255, 199, 0, 0.1);
+    }
+    
+    .bg-light-success {
+        background-color: rgba(80, 205, 137, 0.1);
+    }
+    
+    .fs-2x {
+        font-size: 1.5rem;
+    }
+    
+    .fs-7 {
+        font-size: 0.875rem;
+    }
+    
+    .fs-8 {
+        font-size: 0.75rem;
+    }
+    
+    .badge-light-success {
+        background-color: rgba(80, 205, 137, 0.1);
+        color: #50cd89;
+    }
+    
+    .badge-light-warning {
+        background-color: rgba(255, 199, 0, 0.1);
+        color: #ffc700;
+    }
+    
+    .timeline {
+        position: relative;
+    }
+    
+    .timeline-item {
+        position: relative;
+        display: flex;
+        align-items: flex-start;
+    }
+    
+    .timeline-badge {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+    
+    .timeline-content {
+        flex-grow: 1;
+        padding-top: 0.25rem;
+    }
+    
+    .action-card {
+        transition: all 0.3s ease;
+        border: 1px solid #e1e3ea;
+    }
+    
+    .action-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 20px 0 rgba(76, 87, 125, 0.1);
+        border-color: var(--primary-color);
+    }
+    
+    .chart-container {
+        position: relative;
+    }
+</style>
+
+<!-- Chart.js for the sales chart -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('salesChart').getContext('2d');
+    const salesChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
+            datasets: [{
+                label: 'Ventes (€)',
+                data: [1200, 1900, 1600, 2100, 1800, 2400, 2847],
+                borderColor: '#009ef7',
+                backgroundColor: 'rgba(0, 158, 247, 0.1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: '#e1e3ea'
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
 {% endblock %}

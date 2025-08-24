@@ -1,37 +1,53 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Mon Profil - Retail App{% endblock %}
+{% block page_title %}Mon Profil{% endblock %}
 
 {% block body %}
+<!-- Content Header -->
+<div class="content-header">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="content-title">Profil utilisateur</h1>
+            <p class="content-subtitle">Gérez vos informations personnelles et paramètres de sécurité</p>
+        </div>
+    </div>
+</div>
+
 <div class="row">
-    <div class="col-md-8 mx-auto">
+    <!-- Profile Information -->
+    <div class="col-xl-8 mb-4">
         <div class="card">
             <div class="card-header">
-                <h4 class="mb-0">
-                    <i class="fas fa-user-cog me-2"></i>
-                    Mon Profil
-                </h4>
+                <h3 class="card-title">
+                    <i class="fas fa-user me-2"></i>
+                    Informations personnelles
+                </h3>
             </div>
             <div class="card-body">
                 {{ form_start(profileForm, {'attr': {'class': 'needs-validation'}}) }}
                 
-                <div class="row">
+                <div class="row mb-3">
                     <div class="col-md-6">
-                        {{ form_row(profileForm.firstName) }}
+                        {{ form_label(profileForm.firstName, 'Prénom', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                        {{ form_widget(profileForm.firstName, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(profileForm.firstName) }}
                     </div>
                     <div class="col-md-6">
-                        {{ form_row(profileForm.lastName) }}
+                        {{ form_label(profileForm.lastName, 'Nom', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                        {{ form_widget(profileForm.lastName, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(profileForm.lastName) }}
                     </div>
                 </div>
                 
-                <div class="row">
-                    <div class="col-12">
-                        {{ form_row(profileForm.email) }}
-                    </div>
+                <div class="mb-3">
+                    {{ form_label(profileForm.email, 'Adresse email', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(profileForm.email, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(profileForm.email) }}
                 </div>
                 
-                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <a href="{{ path('app_home') }}" class="btn btn-secondary me-md-2">
+                <div class="d-flex justify-content-end gap-2">
+                    <a href="{{ path('app_home') }}" class="btn btn-light">
                         <i class="fas fa-arrow-left me-2"></i>Retour
                     </a>
                     <button type="submit" class="btn btn-primary">
@@ -42,72 +58,177 @@
                 {{ form_end(profileForm) }}
             </div>
         </div>
-        
-        <div class="card mt-4">
+    </div>
+
+    <!-- Account Overview -->
+    <div class="col-xl-4 mb-4">
+        <div class="card">
             <div class="card-header">
-                <h5 class="mb-0">
+                <h3 class="card-title">
                     <i class="fas fa-info-circle me-2"></i>
-                    Informations du compte
-                </h5>
+                    Aperçu du compte
+                </h3>
             </div>
             <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <p><strong>Nom complet :</strong> {{ user.fullName }}</p>
-                        <p><strong>Email :</strong> {{ user.email }}</p>
-                        <p><strong>Compte créé le :</strong> {{ user.createdAt|date('d/m/Y à H:i') }}</p>
+                <div class="d-flex align-items-center mb-4">
+                    <div class="user-avatar me-3" style="width: 60px; height: 60px; font-size: 1.5rem;">
+                        {{ user.fullName|first|upper }}
                     </div>
-                    <div class="col-md-6">
-                        <p><strong>Statut :</strong> 
-                            {% if user.isActive %}
-                                <span class="badge bg-success">Actif</span>
-                            {% else %}
-                                <span class="badge bg-danger">Inactif</span>
-                            {% endif %}
-                        </p>
-                        <p><strong>Vérification email :</strong> 
-                            {% if user.isVerified %}
-                                <span class="badge bg-success">Vérifié</span>
-                            {% else %}
-                                <span class="badge bg-warning">Non vérifié</span>
-                            {% endif %}
-                        </p>
-                        {% if user.lastLoginAt %}
-                            <p><strong>Dernière connexion :</strong> {{ user.lastLoginAt|date('d/m/Y à H:i') }}</p>
+                    <div>
+                        <h5 class="mb-1">{{ user.fullName }}</h5>
+                        <p class="text-muted mb-0">{{ user.email }}</p>
+                    </div>
+                </div>
+
+                <div class="account-stats">
+                    <div class="stat-item d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-muted">Statut</span>
+                        {% if user.isActive %}
+                            <span class="badge bg-success">Actif</span>
+                        {% else %}
+                            <span class="badge bg-danger">Inactif</span>
                         {% endif %}
                     </div>
+                    
+                    <div class="stat-item d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-muted">Email vérifié</span>
+                        {% if user.isVerified %}
+                            <span class="badge bg-success">Vérifié</span>
+                        {% else %}
+                            <span class="badge bg-warning">Non vérifié</span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="stat-item d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-muted">Membre depuis</span>
+                        <span class="fw-bold">{{ user.createdAt|date('d/m/Y') }}</span>
+                    </div>
+                    
+                    {% if user.lastLoginAt %}
+                    <div class="stat-item d-flex justify-content-between align-items-center">
+                        <span class="text-muted">Dernière connexion</span>
+                        <span class="fw-bold">{{ user.lastLoginAt|date('d/m/Y H:i') }}</span>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
-        
-        <div class="card mt-4">
+
+        <!-- Security Actions -->
+        <div class="card">
             <div class="card-header">
-                <h5 class="mb-0">
+                <h3 class="card-title">
                     <i class="fas fa-shield-alt me-2"></i>
                     Sécurité
-                </h5>
+                </h3>
             </div>
             <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <a href="{{ path('app_forgot_password_request') }}" class="btn btn-warning">
-                            <i class="fas fa-key me-2"></i>Changer le mot de passe
+                <div class="d-grid gap-2">
+                    <a href="{{ path('app_forgot_password_request') }}" class="btn btn-outline-warning">
+                        <i class="fas fa-key me-2"></i>Changer le mot de passe
+                    </a>
+                    {% if not user.isVerified %}
+                        <a href="#" class="btn btn-outline-info">
+                            <i class="fas fa-envelope me-2"></i>Renvoyer l'email de vérification
                         </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Account Activity -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-history me-2"></i>
+                    Activité récente
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="timeline">
+                    <div class="timeline-item mb-3">
+                        <div class="timeline-badge bg-primary">
+                            <i class="fas fa-sign-in-alt text-white"></i>
+                        </div>
+                        <div class="timeline-content ms-4">
+                            <div class="fw-bold">Connexion réussie</div>
+                            <div class="text-muted fs-7">Connexion depuis 192.168.1.1 il y a 2 heures</div>
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        {% if not user.isVerified %}
-                            <a href="#" class="btn btn-info">
-                                <i class="fas fa-envelope me-2"></i>Renvoyer l'email de vérification
-                            </a>
-                        {% else %}
-                            <span class="text-success">
-                                <i class="fas fa-check-circle me-2"></i>Email vérifié
-                            </span>
-                        {% endif %}
+                    <div class="timeline-item mb-3">
+                        <div class="timeline-badge bg-success">
+                            <i class="fas fa-save text-white"></i>
+                        </div>
+                        <div class="timeline-content ms-4">
+                            <div class="fw-bold">Profil mis à jour</div>
+                            <div class="text-muted fs-7">Informations personnelles modifiées il y a 1 jour</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item mb-3">
+                        <div class="timeline-badge bg-info">
+                            <i class="fas fa-envelope text-white"></i>
+                        </div>
+                        <div class="timeline-content ms-4">
+                            <div class="fw-bold">Email de vérification envoyé</div>
+                            <div class="text-muted fs-7">Email de vérification envoyé il y a 3 jours</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-badge bg-warning">
+                            <i class="fas fa-user-plus text-white"></i>
+                        </div>
+                        <div class="timeline-content ms-4">
+                            <div class="fw-bold">Compte créé</div>
+                            <div class="text-muted fs-7">Compte créé le {{ user.createdAt|date('d/m/Y à H:i') }}</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .account-stats .stat-item {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #e1e3ea;
+    }
+    
+    .account-stats .stat-item:last-child {
+        border-bottom: none;
+    }
+    
+    .form-label {
+        color: #3f4254;
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-control {
+        border: 1px solid #e1e3ea;
+        border-radius: 0.475rem;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(0, 158, 247, 0.25);
+    }
+    
+    .btn-light {
+        background-color: #f1f1f2;
+        border-color: #e1e3ea;
+        color: #7e8299;
+    }
+    
+    .btn-light:hover {
+        background-color: #e1e3ea;
+        border-color: #d1d3e0;
+        color: #3f4254;
+    }
+</style>
 {% endblock %}
