@@ -1,0 +1,240 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier l'utilisateur - Administration{% endblock %}
+{% block page_title %}Modifier l'utilisateur{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">Modifier l'utilisateur</h5>
+                <div class="btn-group">
+                    <a href="{{ path('app_admin_user_show', {'id': user.id}) }}" class="btn btn-outline-secondary btn-sm">
+                        <i class="fas fa-eye me-1"></i>Voir
+                    </a>
+                    <a href="{{ path('app_admin_users') }}" class="btn btn-outline-secondary btn-sm">
+                        <i class="fas fa-arrow-left me-1"></i>Retour
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form_row(form.firstName, {
+                            'attr': {
+                                'class': 'form-control',
+                                'placeholder': 'Prénom de l\'utilisateur'
+                            }
+                        }) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.lastName, {
+                            'attr': {
+                                'class': 'form-control',
+                                'placeholder': 'Nom de l\'utilisateur'
+                            }
+                        }) }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form_row(form.email, {
+                            'attr': {
+                                'class': 'form-control',
+                                'placeholder': 'email@exemple.com'
+                            }
+                        }) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.plainPassword, {
+                            'attr': {
+                                'class': 'form-control',
+                                'placeholder': 'Laisser vide pour ne pas changer'
+                            }
+                        }) }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form_row(form.isActive, {
+                            'attr': {
+                                'class': 'form-select'
+                            }
+                        }) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.isVerified, {
+                            'attr': {
+                                'class': 'form-select'
+                            }
+                        }) }}
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Rôles</label>
+                    <div class="border rounded p-3">
+                        {{ form_widget(form.roles, {
+                            'attr': {
+                                'class': 'form-check-input me-2'
+                            }
+                        }) }}
+                        <div class="form-text">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Sélectionnez les rôles à attribuer à cet utilisateur. Le rôle "Utilisateur" est automatiquement attribué.
+                        </div>
+                    </div>
+                    {{ form_errors(form.roles) }}
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a href="{{ path('app_admin_user_show', {'id': user.id}) }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-times me-1"></i>Annuler
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-1"></i>Enregistrer les modifications
+                    </button>
+                </div>
+
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Informations actuelles</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Nom complet</label>
+                    <p class="form-control-plaintext">{{ user.fullName }}</p>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Email</label>
+                    <p class="form-control-plaintext">{{ user.email }}</p>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Statut actuel</label>
+                    <p class="form-control-plaintext">
+                        {% if user.isActive %}
+                            <span class="badge bg-success">Actif</span>
+                        {% else %}
+                            <span class="badge bg-danger">Inactif</span>
+                        {% endif %}
+                    </p>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Vérification email</label>
+                    <p class="form-control-plaintext">
+                        {% if user.isVerified %}
+                            <span class="badge bg-info">Vérifié</span>
+                        {% else %}
+                            <span class="badge bg-warning">Non vérifié</span>
+                        {% endif %}
+                    </p>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Rôles actuels</label>
+                    <div class="form-control-plaintext">
+                        {% for role in user.roles %}
+                            {% if role != 'ROLE_USER' %}
+                                <span class="badge bg-secondary me-1">{{ role|replace({'ROLE_': ''}) }}</span>
+                            {% endif %}
+                        {% endfor %}
+                        {% if user.roles|length == 1 and 'ROLE_USER' in user.roles %}
+                            <span class="badge bg-light text-dark">Utilisateur</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Date d'inscription</label>
+                    <p class="form-control-plaintext">{{ user.createdAt|date('d/m/Y à H:i') }}</p>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Dernière connexion</label>
+                    <p class="form-control-plaintext">
+                        {% if user.lastLoginAt %}
+                            {{ user.lastLoginAt|date('d/m/Y à H:i') }}
+                        {% else %}
+                            <span class="text-muted">Jamais connecté</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Actions rapides</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <form method="post" action="{{ path('app_admin_user_toggle_status', {'id': user.id}) }}">
+                        <button type="submit" class="btn btn-{{ user.isActive ? 'warning' : 'success' }} w-100" onclick="return confirm('Êtes-vous sûr de vouloir changer le statut de cet utilisateur ?')">
+                            <i class="fas fa-{{ user.isActive ? 'ban' : 'check' }} me-2"></i>
+                            {{ user.isActive ? 'Désactiver' : 'Activer' }} l'utilisateur
+                        </button>
+                    </form>
+
+                    <form method="post" action="{{ path('app_admin_user_toggle_verification', {'id': user.id}) }}">
+                        <button type="submit" class="btn btn-info w-100">
+                            <i class="fas fa-{{ user.isVerified ? 'times' : 'check' }} me-2"></i>
+                            {{ user.isVerified ? 'Marquer comme non vérifié' : 'Marquer comme vérifié' }}
+                        </button>
+                    </form>
+
+                    {% if user != app.user %}
+                        <form method="post" action="{{ path('app_admin_user_delete', {'id': user.id}) }}">
+                            <button type="submit" class="btn btn-danger w-100" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action est irréversible.')">
+                                <i class="fas fa-trash me-2"></i>Supprimer l'utilisateur
+                            </button>
+                        </form>
+                    {% else %}
+                        <button class="btn btn-danger w-100" disabled title="Vous ne pouvez pas supprimer votre propre compte">
+                            <i class="fas fa-trash me-2"></i>Supprimer l'utilisateur
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Validation du formulaire
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(event) {
+        if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+    });
+
+    // Confirmation avant soumission
+    const submitButton = form.querySelector('button[type="submit"]');
+    submitButton.addEventListener('click', function(event) {
+        if (!confirm('Êtes-vous sûr de vouloir enregistrer ces modifications ?')) {
+            event.preventDefault();
+        }
+    });
+});
+</script>
+{% endblock %}

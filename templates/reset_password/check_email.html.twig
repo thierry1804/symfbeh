@@ -1,11 +1,35 @@
-{% extends 'base.html.twig' %}
+{% extends 'layouts/auth.html.twig' %}
 
-{% block title %}Password Reset Email Sent{% endblock %}
+{% block title %}Email envoyé - Retail App{% endblock %}
 
 {% block body %}
-    <p>
-        If an account matching your email exists, then an email was just sent that contains a link that you can use to reset your password.
-        This link will expire in {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
-    </p>
-    <p>If you don't receive an email please check your spam folder or <a href="{{ path('app_forgot_password_request') }}">try again</a>.</p>
+<div class="auth-header text-center mb-4">
+    <h1 class="auth-title">Email envoyé !</h1>
+    <p class="auth-subtitle">Vérifiez votre boîte de réception</p>
+</div>
+
+<div class="alert alert-info">
+    <i class="fas fa-envelope me-2"></i>
+    Si un compte correspondant à votre email existe, un email vient d'être envoyé contenant un lien que vous pouvez utiliser pour réinitialiser votre mot de passe.
+    Ce lien expirera dans {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
+</div>
+
+<div class="alert alert-warning">
+    <i class="fas fa-exclamation-triangle me-2"></i>
+    Si vous ne recevez pas d'email, vérifiez votre dossier spam ou 
+    <a href="{{ path('app_forgot_password_request') }}" class="text-decoration-none">réessayez</a>.
+</div>
+
+<div class="auth-footer">
+    <div class="auth-divider">
+        <span>ou</span>
+    </div>
+    <div class="mt-3">
+        <p class="mb-0">
+            <a href="{{ path('app_login') }}" class="text-decoration-none">
+                <i class="fas fa-arrow-left me-1"></i>Retour à la connexion
+            </a>
+        </p>
+    </div>
+</div>
 {% endblock %}

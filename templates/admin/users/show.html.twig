@@ -1,0 +1,188 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de l'utilisateur - Administration{% endblock %}
+{% block page_title %}Détails de l'utilisateur{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">Informations de l'utilisateur</h5>
+                <div class="btn-group">
+                    <a href="{{ path('app_admin_user_edit', {'id': user.id}) }}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-edit me-1"></i>Modifier
+                    </a>
+                    <a href="{{ path('app_admin_users') }}" class="btn btn-outline-secondary btn-sm">
+                        <i class="fas fa-arrow-left me-1"></i>Retour
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Nom complet</label>
+                            <p class="form-control-plaintext">{{ user.fullName }}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Email</label>
+                            <p class="form-control-plaintext">{{ user.email }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Prénom</label>
+                            <p class="form-control-plaintext">{{ user.firstName }}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Nom</label>
+                            <p class="form-control-plaintext">{{ user.lastName }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Statut</label>
+                            <p class="form-control-plaintext">
+                                {% if user.isActive %}
+                                    <span class="badge bg-success">Actif</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Inactif</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Vérification email</label>
+                            <p class="form-control-plaintext">
+                                {% if user.isVerified %}
+                                    <span class="badge bg-info">Vérifié</span>
+                                {% else %}
+                                    <span class="badge bg-warning">Non vérifié</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Date d'inscription</label>
+                            <p class="form-control-plaintext">{{ user.createdAt|date('d/m/Y à H:i') }}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Dernière connexion</label>
+                            <p class="form-control-plaintext">
+                                {% if user.lastLoginAt %}
+                                    {{ user.lastLoginAt|date('d/m/Y à H:i') }}
+                                {% else %}
+                                    <span class="text-muted">Jamais connecté</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Rôles</label>
+                    <div class="form-control-plaintext">
+                        {% for role in user.roles %}
+                            {% if role != 'ROLE_USER' %}
+                                <span class="badge bg-secondary me-1">{{ role|replace({'ROLE_': ''}) }}</span>
+                            {% endif %}
+                        {% endfor %}
+                        {% if user.roles|length == 1 and 'ROLE_USER' in user.roles %}
+                            <span class="badge bg-light text-dark">Utilisateur</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Actions rapides</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <form method="post" action="{{ path('app_admin_user_toggle_status', {'id': user.id}) }}">
+                        <button type="submit" class="btn btn-{{ user.isActive ? 'warning' : 'success' }} w-100" onclick="return confirm('Êtes-vous sûr de vouloir changer le statut de cet utilisateur ?')">
+                            <i class="fas fa-{{ user.isActive ? 'ban' : 'check' }} me-2"></i>
+                            {{ user.isActive ? 'Désactiver' : 'Activer' }} l'utilisateur
+                        </button>
+                    </form>
+
+                    <form method="post" action="{{ path('app_admin_user_toggle_verification', {'id': user.id}) }}">
+                        <button type="submit" class="btn btn-info w-100">
+                            <i class="fas fa-{{ user.isVerified ? 'times' : 'check' }} me-2"></i>
+                            {{ user.isVerified ? 'Marquer comme non vérifié' : 'Marquer comme vérifié' }}
+                        </button>
+                    </form>
+
+                    {% if user != app.user %}
+                        <form method="post" action="{{ path('app_admin_user_delete', {'id': user.id}) }}">
+                            <button type="submit" class="btn btn-danger w-100" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action est irréversible.')">
+                                <i class="fas fa-trash me-2"></i>Supprimer l'utilisateur
+                            </button>
+                        </form>
+                    {% else %}
+                        <button class="btn btn-danger w-100" disabled title="Vous ne pouvez pas supprimer votre propre compte">
+                            <i class="fas fa-trash me-2"></i>Supprimer l'utilisateur
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Statistiques</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <div class="border-end">
+                            <h4 class="text-primary mb-1">{{ user.createdAt|date('d') }}</h4>
+                            <small class="text-muted">{{ user.createdAt|date('M Y') }}</small>
+                            <p class="mb-0 small">Date d'inscription</p>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <h4 class="text-info mb-1">
+                            {% if user.lastLoginAt %}
+                                {{ user.lastLoginAt|date('d') }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </h4>
+                        <small class="text-muted">
+                            {% if user.lastLoginAt %}
+                                {{ user.lastLoginAt|date('M Y') }}
+                            {% else %}
+                                Jamais
+                            {% endif %}
+                        </small>
+                        <p class="mb-0 small">Dernière connexion</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

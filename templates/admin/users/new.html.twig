@@ -1,0 +1,194 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un nouvel utilisateur - Administration{% endblock %}
+{% block page_title %}Créer un nouvel utilisateur{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">Créer un nouvel utilisateur</h5>
+                <div class="btn-group">
+                    <a href="{{ path('app_admin_users') }}" class="btn btn-outline-secondary btn-sm">
+                        <i class="fas fa-arrow-left me-1"></i>Retour
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form_row(form.firstName, {
+                            'attr': {
+                                'class': 'form-control',
+                                'placeholder': 'Prénom de l\'utilisateur'
+                            }
+                        }) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.lastName, {
+                            'attr': {
+                                'class': 'form-control',
+                                'placeholder': 'Nom de l\'utilisateur'
+                            }
+                        }) }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form_row(form.email, {
+                            'attr': {
+                                'class': 'form-control',
+                                'placeholder': 'email@exemple.com'
+                            }
+                        }) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.plainPassword, {
+                            'attr': {
+                                'class': 'form-control',
+                                'placeholder': 'Mot de passe'
+                            }
+                        }) }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form_row(form.isActive, {
+                            'attr': {
+                                'class': 'form-select'
+                            }
+                        }) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.isVerified, {
+                            'attr': {
+                                'class': 'form-select'
+                            }
+                        }) }}
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Rôles</label>
+                    <div class="border rounded p-3">
+                        {{ form_widget(form.roles, {
+                            'attr': {
+                                'class': 'form-check-input me-2'
+                            }
+                        }) }}
+                        <div class="form-text">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Sélectionnez les rôles à attribuer à cet utilisateur. Le rôle "Utilisateur" est automatiquement attribué.
+                        </div>
+                    </div>
+                    {{ form_errors(form.roles) }}
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a href="{{ path('app_admin_users') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-times me-1"></i>Annuler
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-1"></i>Créer l'utilisateur
+                    </button>
+                </div>
+
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Informations</h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <h6><i class="fas fa-info-circle me-2"></i>Création d'un nouvel utilisateur</h6>
+                    <p class="mb-2">Tous les champs marqués d'un <span class="text-danger">*</span> sont obligatoires.</p>
+                    <p class="mb-2">Le mot de passe doit contenir au moins 6 caractères.</p>
+                    <p class="mb-0">L'utilisateur sera créé avec les paramètres sélectionnés.</p>
+                </div>
+
+                <div class="alert alert-warning">
+                    <h6><i class="fas fa-exclamation-triangle me-2"></i>Attention</h6>
+                    <p class="mb-0">Assurez-vous que l'adresse email n'est pas déjà utilisée par un autre utilisateur.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Valeurs par défaut</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        <strong>Statut :</strong> Actif
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        <strong>Vérification :</strong> Non vérifié
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        <strong>Rôle :</strong> Utilisateur
+                    </li>
+                    <li class="mb-0">
+                        <i class="fas fa-check text-success me-2"></i>
+                        <strong>Date de création :</strong> Automatique
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Validation du formulaire
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(event) {
+        if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+    });
+
+    // Confirmation avant soumission
+    const submitButton = form.querySelector('button[type="submit"]');
+    submitButton.addEventListener('click', function(event) {
+        if (!confirm('Êtes-vous sûr de vouloir créer cet utilisateur ?')) {
+            event.preventDefault();
+        }
+    });
+
+    // Validation en temps réel de l'email
+    const emailInput = document.querySelector('input[type="email"]');
+    emailInput.addEventListener('blur', function() {
+        const email = this.value;
+        if (email && !isValidEmail(email)) {
+            this.setCustomValidity('Veuillez saisir une adresse email valide');
+        } else {
+            this.setCustomValidity('');
+        }
+    });
+
+    function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+});
+</script>
+{% endblock %}
