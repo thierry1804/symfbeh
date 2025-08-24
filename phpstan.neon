@@ -3,3 +3,6 @@ parameters:
     paths:
         - src
     reportUnmatchedIgnoredErrors: false
+    ignoreErrors:
+        - '#Property .* is never written, only read#'
+        - '#Property .* is never read, only written#'

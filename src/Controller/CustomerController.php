@@ -179,7 +179,7 @@ class CustomerController extends AbstractController
     #[Route('/bulk-assign', name: 'app_customer_bulk_assign', methods: ['POST'])]
     public function bulkAssign(Request $request): Response
     {
-        $customerIds = $request->request->get('customerIds', []);
+        $customerIds = $request->request->all('customerIds');
         $userId = $request->request->get('assignedTo');
 
         if (!empty($customerIds) && $userId) {
@@ -200,7 +200,7 @@ class CustomerController extends AbstractController
     #[Route('/bulk-status', name: 'app_customer_bulk_status', methods: ['POST'])]
     public function bulkStatus(Request $request): Response
     {
-        $customerIds = $request->request->get('customerIds', []);
+        $customerIds = $request->request->all('customerIds');
         $status = $request->request->get('status');
 
         if (!empty($customerIds) && $status) {

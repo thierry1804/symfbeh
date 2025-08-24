@@ -189,8 +189,8 @@ class CustomerFormType extends AbstractType
                 'choice_label' => 'fullName',
                 'required' => false,
                 'placeholder' => 'Sélectionnez un utilisateur',
-                'query_builder' => function (UserRepository $ur) {
-                    return $ur->createQueryBuilder('u')
+                'query_builder' => function () {
+                    return $this->userRepository->createQueryBuilder('u')
                         ->where('u.isActive = :active')
                         ->setParameter('active', true)
                         ->orderBy('u.firstName', 'ASC');
